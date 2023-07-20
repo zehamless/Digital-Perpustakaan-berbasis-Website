@@ -13,6 +13,45 @@ use Tests\TestCase;
 class CRUD_book extends TestCase
 {
     use refreshDatabase;
+
+    /**
+     * Index test.
+     * @test
+     * @return void
+     */
+    public function testIndex(): void
+    {
+        //login as user
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $category = Category::factory()->create();
+
+        //upload cover
+        Storage::fake('public');
+        $cover = UploadedFile::fake()->image('cover.jpg');
+
+        //upload file
+        $file = UploadedFile::fake()->create('file.pdf');
+
+        //create a book
+        $response = $this->post('/books', [
+            'title' => 'Buku 1',
+            'description' => 'Deskripsi buku 1',
+            'amount' => 3,
+            'cover' => $cover,
+            'file' => $file,
+            'category_id' => $category->id,
+            'user_id' => $user->id,
+        ]);
+
+        //check book listed
+        $response = $this->get('/books');
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Berhasil menampilkan buku',
+            ]);
+    }
+
     /**
      * Store test.
      * @test

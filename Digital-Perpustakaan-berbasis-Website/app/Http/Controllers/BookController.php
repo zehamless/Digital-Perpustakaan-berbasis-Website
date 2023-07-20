@@ -14,7 +14,11 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Book::orderBy('created_at', 'DESC')->get();
+        return response()->json([
+            'message'=>'Berhasil menampilkan buku',
+            'books'=>$books,
+        ], 200);
     }
 
     /**
