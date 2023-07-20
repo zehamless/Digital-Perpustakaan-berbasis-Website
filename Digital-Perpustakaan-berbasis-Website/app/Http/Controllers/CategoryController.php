@@ -12,7 +12,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::orderBy('created_at', 'DESC')->get();
+        return response()->json([
+            'message'=>'Berhasil menampilkan kategori',
+        ], 200);
     }
 
     /**
@@ -28,7 +31,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(['name' => 'required|string|max:255']);
+        $category = Category::create($request->all());
+        return response()->json([
+            'message'=>'Kategori berhasil ditambahkan',
+            'category'=>$category,
+        ], 201);
     }
 
     /**
@@ -52,7 +60,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $validatedData = $request->validate(['name' => 'required|string|max:255']);
+        $category->update($validatedData);
+        return response()->json([
+            'message'=>'Kategori berhasil diubah',
+            'category'=>$category,
+            'id'=>$category->id,
+        ], 200);
     }
 
     /**
@@ -60,6 +74,6 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
     }
 }

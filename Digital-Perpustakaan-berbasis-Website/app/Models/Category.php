@@ -12,6 +12,15 @@ class Category extends Model
     protected $fillable=[
         'name',
     ];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+    /**
+     * Get all of the books for the Category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function books(): HasMany
     {
         return $this->hasMany(Book::class);
