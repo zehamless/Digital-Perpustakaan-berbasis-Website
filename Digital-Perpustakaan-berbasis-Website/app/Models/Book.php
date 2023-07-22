@@ -9,12 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Book extends Model
 {
     use HasFactory;
-    protected $fillable=[
-        'title',
-        'description',
-        'amount',
-        'cover',
-        'file_path',
+    protected $fillable = [
+        'title', 'description', 'amount', 'cover', 'file_path', 'category_id', 'user_id',
     ];
 
     /**
