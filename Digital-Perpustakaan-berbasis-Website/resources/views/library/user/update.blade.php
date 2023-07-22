@@ -78,7 +78,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                    <form id="delete-form" action="{{ route('books.destroy', $book) }}" method="POST"">
+                    <form id="delete-form" action="{{ route('books.destroy', $book) }}" method="POST">
                         @csrf
                         @method('DELETE')
                     <button type="submit" class="btn btn-primary">Sure</button>

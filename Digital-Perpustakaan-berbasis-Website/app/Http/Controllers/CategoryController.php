@@ -13,9 +13,10 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::orderBy('created_at', 'DESC')->get();
-        return response()->json([
-            'message'=>'Berhasil menampilkan kategori',
-        ], 200);
+//        return response()->json([
+//            'message'=>'Berhasil menampilkan kategori',
+//        ], 200);
+        return view('library.admin.category.categories', compact('categories'));
     }
 
     /**
@@ -33,10 +34,11 @@ class CategoryController extends Controller
     {
         $request->validate(['name' => 'required|string|max:255']);
         $category = Category::create($request->all());
-        return response()->json([
-            'message'=>'Kategori berhasil ditambahkan',
-            'category'=>$category,
-        ], 201);
+//        return response()->json([
+//            'message'=>'Kategori berhasil ditambahkan',
+//            'category'=>$category,
+//        ], 201);
+        return redirect()->back()->with('success', 'Kategori berhasil ditambahkan');
     }
 
     /**
@@ -62,11 +64,12 @@ class CategoryController extends Controller
     {
         $validatedData = $request->validate(['name' => 'required|string|max:255']);
         $category->update($validatedData);
-        return response()->json([
-            'message'=>'Kategori berhasil diubah',
-            'category'=>$category,
-            'id'=>$category->id,
-        ], 200);
+//        return response()->json([
+//            'message'=>'Kategori berhasil diubah',
+//            'category'=>$category,
+//            'id'=>$category->id,
+//        ], 200);
+        return redirect()->back()->with('success', 'Kategori berhasil diubah');
     }
 
     /**
@@ -75,5 +78,6 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
+        return redirect()->back()->with('success', 'Kategori berhasil dihapus');
     }
 }
