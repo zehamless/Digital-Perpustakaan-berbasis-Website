@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Category;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -67,10 +68,20 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show()
+    public function show(Request $request)
     {
-        $books= Book::with('category')->where('user_id', Auth::id())->get();
-        return view('library.user.bookshelf', compact('books'));
+        $query= Book::with('category');
+            if ($request->filled('category_id')){
+                $query->where('category_id', $request->category_id);
+                            }
+            $books = $query->get();
+        $categories = Category::all();
+        if ($request->wantsJson()) {
+            return response()->json($books);
+        } else {
+            $categories = Category::all();
+            return view('library.user.bookshelf', compact('books', 'categories'));
+        }
     }
 
     /**
@@ -78,7 +89,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        if ($book->user_id !== Auth::id()) {
+        if ($book->user_id !== Auth::id() and Auth::user()->role !== 'admin') {
             // Redirect the user back with an error message or perform some other action
             return redirect()->back()->with('error', 'You are not authorized to edit this book.');
         }
@@ -150,5 +161,19 @@ class BookController extends Controller
 //            'message'=>'Buku berhasil dihapus',
 //        ], 200);
         return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus');
+    }
+
+    public function exportPdf()
+    {
+        $query = Book::with('category');
+        if (Auth::user()->role === 'admin') {
+            // Redirect the user back with an error message or perform some other action
+            $books = $query->get();
+        }
+        else {
+            $books = $query->where('user_id', Auth::id())->get();
+        }
+        $pdf = PDF::loadView('library.export', compact('books'));
+        return $pdf->download('books.pdf');
     }
 }

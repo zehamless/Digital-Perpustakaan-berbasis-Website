@@ -3,46 +3,50 @@
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
+            @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                        <span class="alert-text"><strong>Error,</strong> {{session('error')}}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&#215;</span>
+                        </button>
+                    </div>
+
+            @endif
                 <div class="card mb-4">
                     <div class="card-header pb-0">
                         <h6>Books List</h6>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('books.create') }}" class="btn btn-primary">Add New Book</a>
+                            <a href="{{ route('books.export') }}" class="btn btn-success">Export</a>
+                        </div>
+                        <div>
+                        <select id="category-filter">
+                            <option value="">Category Filter</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table class="table">
                                 <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Title</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Category</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Amount</th>
-                                    <th class="text-secondary opacity-7"></th>
+                                    <th class="align-middle text-center">Title</th>
+                                    <th class="align-middle text-center">Category</th>
+                                    <th class="align-middle text-center">Amount</th>
+                                    <th class="align-middle text-center">Action</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                @foreach($books as $book)
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{$book->title}}</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{$book->category->name}}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{$book->amount}}</p>
-                                    </td>
-                                    <td class="align-middle">
-                                        <a href="{{route('books.edit', [$book->id])}}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                            Edit
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
+                                <tbody id="filteredData">
+                                <!-- Data loaded -->
                                 </tbody>
                             </table>
+                            <div id="paginationContainer">
+                                <ul class="pagination justify-content-center"></ul>
+                            </div>
                         </div>
                     </div>
                 </div>

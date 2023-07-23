@@ -226,3 +226,82 @@
 </script>
 <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="{{asset("assets/js/soft-ui-dashboard.min.js?v=1.0.7")}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        $('#category-filter').on('change', function () {
+            let id = $(this).val();
+            fetchDataByCategory(id);
+        });
+
+        function fetchDataByCategory(id) {
+            $.ajax({
+                url: "{{ route('books.userIndex') }}",
+                type: 'GET',
+                dataType: 'json',
+                data: { category_id: id },
+                success: function (books) {
+                    const totalPages = Math.ceil(books.length / itemsPerPage);
+                    updatePagination(totalPages);
+
+                    var tableBody = $('#filteredData');
+                    tableBody.empty();
+
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+
+                    for (let i = startIndex; i < endIndex; i++) {
+                        if (i < books.length) {
+                            var book = books[i];
+                            var row = '<tr>' +
+                                '<td class="align-middle text-center">' + book.title + '</td>' +
+                                '<td class="align-middle text-center">' + book.category.name + '</td>' +
+                                '<td class="align-middle text-center">' + book.amount + '</td>' +
+                                '<td class="align-middle text-center"><a href="/books/' + book.id + '/edit" class="btn btn btn-outline-warning">Edit</a></td>' +
+                                '</tr>';
+
+                            tableBody.append(row);
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                },
+            });
+        }
+
+        function updatePagination(totalPages) {
+            const paginationContainer = $('#paginationContainer ul');
+            paginationContainer.empty();
+
+            for (let i = 1; i <= totalPages; i++) {
+                const listItem = $('<li class="page-item"><a class="page-link">' + i + '</a></li>');
+                listItem.on('click', function () {
+                    currentPage = i;
+                    fetchDataByCategory($('#category-filter').val());
+                });
+                paginationContainer.append(listItem);
+            }
+        }
+
+        fetchDataByCategory('');
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        var currentUrl = window.location.href;
+
+        $(".navbar-nav .nav-link").each(function() {
+            var linkUrl = $(this).attr("href");
+
+            if (currentUrl === linkUrl) {
+                $(this).addClass("active");
+            }
+        });
+    });
+</script>
+
+

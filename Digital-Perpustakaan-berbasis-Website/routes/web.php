@@ -21,7 +21,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect('/books');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -32,4 +32,5 @@ Route::middleware('auth')->group(function () {
 Route::resource('books', BookController::class)->middleware('auth');
 Route::get('/books/mybooks', [BookController::class, 'userIndex'])->name('books.userIndex')->middleware('auth');
 Route::resource('categories', CategoryController::class)->middleware('auth');
+Route::get('/books/mybooks/export', [BookController::class, 'exportPdf'])->name('books.export')->middleware('auth');
 require __DIR__.'/auth.php';
