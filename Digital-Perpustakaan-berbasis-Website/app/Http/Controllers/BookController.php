@@ -84,11 +84,17 @@ class BookController extends Controller
     {
         $query = Book::with('category');
 
-        // if user filter selected
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
+        if (Auth::user()->role !== 'admin') {
+            $userQuery = $query->where('user_id', Auth::id());
+
+            // if user filter selected
+            if ($request->filled('category_id')) {
+                $userQuery->where('category_id', $request->category_id);
+            }
+            $books = $userQuery->get();
+        }else{
         $books = $query->get();
+        }
         $categories = Category::all();
 
         if ($request->wantsJson()) {
@@ -206,4 +212,5 @@ class BookController extends Controller
         $pdf = PDF::loadView('library.export', compact('books'));
         return $pdf->download('books.pdf');
     }
+
 }
