@@ -30,7 +30,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 Route::resource('books', BookController::class)->middleware('auth');
-Route::get('/books/mybooks', [BookController::class, 'userIndex'])->name('books.userIndex')->middleware('auth');
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('books/mybooks')->group(function () {
+        Route::get('/', [BookController::class, 'userIndex'])->name('books.userIndex');
+        Route::get('/export', [BookController::class, 'exportPdf'])->name('books.export');
+    });
+});
 Route::resource('categories', CategoryController::class)->middleware('auth');
-Route::get('/books/mybooks/export', [BookController::class, 'exportPdf'])->name('books.export')->middleware('auth');
-require __DIR__.'/auth.php';
+
+require __DIR__ . '/auth.php';

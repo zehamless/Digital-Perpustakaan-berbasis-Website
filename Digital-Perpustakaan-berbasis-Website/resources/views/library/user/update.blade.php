@@ -51,7 +51,7 @@
         </div>
         <div class="form-group">
             <label for="file">Current File: </label>
-            <a href="{{asset('storage/'. $book->file)}}"> {{$book->title}}</a>
+            <a> {{$book->title}}</a>
             <input type="file" class="form-control @error('file') is-invalid @enderror" id="file" name="file"
                    placeholder="pdf">
             @error('file')
